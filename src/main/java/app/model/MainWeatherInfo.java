@@ -7,7 +7,6 @@ public class MainWeatherInfo {
     private int pressure;
     private int humidity;
 
-
     public void setTemp(double temp) {
         this.temp = temp;
     }

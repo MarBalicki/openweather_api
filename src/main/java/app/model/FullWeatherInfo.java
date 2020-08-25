@@ -9,6 +9,9 @@ public class FullWeatherInfo {
     private WindWeatherInfo wind;
     private int visibility;
 
+    public String getName() {
+        return name;
+    }
 
     public void setName(String name) {
         this.name = name;
