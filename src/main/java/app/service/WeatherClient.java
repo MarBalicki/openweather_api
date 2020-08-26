@@ -1,23 +1,44 @@
-package app;
+package app.service;
 
 import app.model.FullWeatherInfo;
+//import app.model.WeatherInfo;
+import app.repository.WeatherRepository;
 import com.google.gson.Gson;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Optional;
 
+@Service
 public class WeatherClient {
     private static final String API_TOKEN = "c8d21edcb8d681952c9139e3780454a2";
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
 
+    private final WeatherRepository weatherRepository;
+
+    public WeatherClient(WeatherRepository weatherRepository) {
+        this.weatherRepository = weatherRepository;
+    }
+
+    public FullWeatherInfo getWeatherFromOutsideApi(String city, String country) throws IOException, InterruptedException {
+        String weatherJson = getCityWeatherJson(city, country);
+        FullWeatherInfo fullWeatherInfo = parseWeatherInfo(weatherJson);
+        fullWeatherInfo.setDate(new Date());
+        return weatherRepository.save(fullWeatherInfo);
+    }
+
+    public void save(FullWeatherInfo fullWeatherInfo) {
+        weatherRepository.save(fullWeatherInfo);
+    }
+
     public String getCityWeatherJson(String city, String country) throws IOException, InterruptedException {
-        String basicWeatherUrlTemplate = "https://api.openweathermap.org/data/2.5/weather?q=%s,q=%s&appid=%s";
+        String basicWeatherUrlTemplate = "https://api.openweathermap.org/data/2.5/weather?q=%s,q=%s&units=metric&appid=%s";
         String fullUrl = String.format(basicWeatherUrlTemplate, city, country, API_TOKEN);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -32,33 +53,6 @@ public class WeatherClient {
     private FullWeatherInfo parseWeatherInfo(String weatherJson) {
         Gson gson = new Gson();
         return gson.fromJson(weatherJson, FullWeatherInfo.class);
-    }
-
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        WeatherClient weatherClient = new WeatherClient();
-        String fewTowns = "Warszawa, Wrocław, Szczecin, Toruń, Iława";
-        String poland = "pl";
-        String[] towns = fewTowns.split(", ");
-        FullWeatherInfo fullWeatherInfo = null;
-        Set<FullWeatherInfo> weatherInfoSet = new HashSet<>();
-        for (String town : towns) {
-            String weather = weatherClient.getCityWeatherJson(town, poland);
-            fullWeatherInfo = weatherClient.parseWeatherInfo(weather);
-            weatherInfoSet.add(fullWeatherInfo);
-        }
-        weatherInfoSet.stream()
-                .sorted(Comparator.comparing(FullWeatherInfo::getName))
-                .forEach(System.out::println);
-
-        String rodos = "Rodos";
-        String greece = "gr";
-        String weather = weatherClient.getCityWeatherJson(rodos, greece);
-        fullWeatherInfo = weatherClient.parseWeatherInfo(weather);
-        System.out.println(fullWeatherInfo);
-
-
-
     }
 
 }
