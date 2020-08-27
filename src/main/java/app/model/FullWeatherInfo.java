@@ -15,7 +15,8 @@ public class FullWeatherInfo {
     private String name;
     @Embedded
     private CloudsWeatherInfo clouds;
-    @OneToMany(mappedBy = "fullWeatherInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "weather_info_id", nullable = false, updatable = false)
     private List<WeatherInfo> weather;
     @Embedded
     private MainWeatherInfo main;
@@ -25,6 +26,10 @@ public class FullWeatherInfo {
     @Embedded
     private CoordinatesWeatherInfo coord;
     private Date date;
+
+    public FullWeatherInfo(String name) {
+        this.name = name;
+    }
 
     public List<WeatherInfo> getWeather() {
         return weather;

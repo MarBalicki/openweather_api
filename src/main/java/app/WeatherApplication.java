@@ -24,8 +24,8 @@ public class WeatherApplication {
 //            weatherClient.getWeatherFromOutsideApi("Nesebyr", "bg");
 //            Thread.sleep(300000);
 //        }
-        FullWeatherInfo weatherFromOutsideApi = weatherClient.getWeatherFromOutsideApi("Wrocław", "pl");
-        System.out.println(weatherFromOutsideApi);
+//        FullWeatherInfo weatherFromOutsideApi = weatherClient.getWeatherFromOutsideApi("Wrocław", "pl");
+//        System.out.println(weatherFromOutsideApi);
 
     }
 }

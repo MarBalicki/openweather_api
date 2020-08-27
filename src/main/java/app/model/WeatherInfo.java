@@ -13,7 +13,11 @@ public class WeatherInfo {
     private String main;
     private String icon;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private FullWeatherInfo fullWeatherInfo;
+    @JoinColumn(insertable = false, updatable = false)
+    private FullWeatherInfo weatherInfo;
+
+    public WeatherInfo() {
+    }
 
     public Long getId() {
         return id;
@@ -47,15 +51,12 @@ public class WeatherInfo {
         return description;
     }
 
-    public FullWeatherInfo getFullWeatherInfo() {
-        return fullWeatherInfo;
+    public FullWeatherInfo getWeatherInfo() {
+        return weatherInfo;
     }
 
-    public void setFullWeatherInfo(FullWeatherInfo fullWeatherInfo) {
-        this.fullWeatherInfo = fullWeatherInfo;
-    }
-
-    public WeatherInfo() {
+    public void setWeatherInfo(FullWeatherInfo fullWeatherInfo) {
+        this.weatherInfo = fullWeatherInfo;
     }
 
     @Override
