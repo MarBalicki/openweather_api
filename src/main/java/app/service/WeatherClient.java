@@ -1,7 +1,6 @@
 package app.service;
 
 import app.model.FullWeatherInfo;
-//import app.model.WeatherInfo;
 import app.repository.WeatherRepository;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
@@ -11,9 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class WeatherClient {

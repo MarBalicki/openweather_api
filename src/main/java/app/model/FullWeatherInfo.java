@@ -1,23 +1,11 @@
 package app.model;
 
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 @Entity
 @Table(name = "weather_info")
-//@TypeDefs({
-//        @TypeDef(
-//                name = "object-array",
-//                typeClass = StringArrayType.class
-//        )
-//})
 public class FullWeatherInfo {
 
     @Id
@@ -27,16 +15,24 @@ public class FullWeatherInfo {
     private String name;
     @Embedded
     private CloudsWeatherInfo clouds;
-//    @Embedded
-//    @Type(type = "object-array")
-//    @Column(columnDefinition = "string[]")
-//    private WeatherInfo[] weather;
+    @OneToMany(mappedBy = "fullWeatherInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<WeatherInfo> weather;
     @Embedded
     private MainWeatherInfo main;
     @Embedded
     private WindWeatherInfo wind;
     private int visibility;
+    @Embedded
+    private CoordinatesWeatherInfo coord;
     private Date date;
+
+    public List<WeatherInfo> getWeather() {
+        return weather;
+    }
+
+    public void setWeather(List<WeatherInfo> weather) {
+        this.weather = weather;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -53,17 +49,6 @@ public class FullWeatherInfo {
     public void setClouds(CloudsWeatherInfo clouds) {
         this.clouds = clouds;
     }
-
-//    public void setWeather(WeatherInfo[] weather) {
-////        Optional<WeatherInfo> first = Arrays.stream(weather).findFirst();
-////        if (first.isPresent()) {
-////            String description = first.get().toString();
-////            for (WeatherInfo w : weather) {
-////                this.weather = w.setDescription(description);
-////            }
-////        }
-//        this.weather = weather;
-//    }
 
     public void setMain(MainWeatherInfo main) {
         this.main = main;
@@ -85,10 +70,6 @@ public class FullWeatherInfo {
         return clouds;
     }
 
-//    public WeatherInfo[] getWeather() {
-//        return weather;
-//    }
-
     public MainWeatherInfo getMain() {
         return main;
     }
@@ -99,6 +80,14 @@ public class FullWeatherInfo {
 
     public int getVisibility() {
         return visibility;
+    }
+
+    public CoordinatesWeatherInfo getCoord() {
+        return coord;
+    }
+
+    public void setCoord(CoordinatesWeatherInfo coord) {
+        this.coord = coord;
     }
 
     public Date getDate() {
@@ -113,11 +102,10 @@ public class FullWeatherInfo {
     }
 
     public FullWeatherInfo(Long id, String name, CloudsWeatherInfo clouds,
-                            MainWeatherInfo main, WindWeatherInfo wind, int visibility, Date date) {
+                           MainWeatherInfo main, WindWeatherInfo wind, int visibility, Date date) {
         this.id = id;
         this.name = name;
         this.clouds = clouds;
-//        this.weather = weather;
         this.main = main;
         this.wind = wind;
         this.visibility = visibility;
@@ -128,6 +116,10 @@ public class FullWeatherInfo {
     public String toString() {
         return "FullWeatherInfo{" +
                 "City name " + name +
+                ", " + weather
+                .toString()
+                .replace("[", "")
+                .replace("]", "") +
                 ", clouds " + clouds +
                 ", main " + main +
                 ", wind " + wind +
